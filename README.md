@@ -1,0 +1,2 @@
+# Unity.Localization
+Localization system
