@@ -3,18 +3,19 @@
 public abstract class LocaleComponentBase : MonoBehaviour
 {
     [SerializeField]
-    protected string key;
+    [Tooltip("與多國資料表對應的鍵值")]
+    protected string localizationKey;
 
     /// <summary>
-    /// Localize on start.
+    /// 初始本地化
     /// </summary>
     void Start()
     {
-        OnLocalize();
+        Localize();
     }
 
     /// <summary>
-    /// 當Localization變換語系時呼叫
+    /// 使用事先在Inspector設定好的鍵值進行本地化
     /// </summary>
-    public abstract void OnLocalize();
+    public abstract void Localize();
 }

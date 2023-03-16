@@ -1,0 +1,3 @@
+﻿Key,zh_TW,zh_CN,en_US
+TestKey1,測試文字!,测试文字!,Test text!
+TestKey2,測試文字帶參數\n參數1 = <0>\n參數2 = <1>,测试文字带参数\n参数1 = <0>\n参数2 = <1>,Test text with parameters\nparameter 1 = <0>\nparameter 2 = <1>
