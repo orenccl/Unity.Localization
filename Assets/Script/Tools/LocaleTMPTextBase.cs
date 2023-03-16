@@ -1,16 +1,22 @@
 ﻿using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 [ExecuteInEditMode]
-public abstract class LocaleTextComponentBase<T> : LocaleComponentBase where T : MonoBehaviour
+public abstract class LocaleTMPTextBase<T> : LocaleComponentBase where T : TMP_Text
 {
+
     [SerializeField]
     [Tooltip("要代入字串中的參數，會取代掉以<i>表示的多國字串")]
     protected string[] args = new string[0];
+    [SerializeField]
+    protected TMP_FontAsset defaultFontAsset;
+    [SerializeField]
+    protected SerializableDictionary<Language, TMP_FontAsset> overrideFontAsset;
+
+    private Dictionary<Language, TMP_FontAsset> overriteFontAssetDictionary;
 
     protected T text;
-
-    protected abstract void UpdateText(string str);
 
     private void Start()
     {
@@ -21,6 +27,7 @@ public abstract class LocaleTextComponentBase<T> : LocaleComponentBase where T :
             return;
         }
 
+        overriteFontAssetDictionary = overrideFontAsset.ToDictionary();
         Localize();
     }
 
@@ -34,7 +41,22 @@ public abstract class LocaleTextComponentBase<T> : LocaleComponentBase where T :
             return;
         }
         // 依照繼承類別的不同，自行去更新文字
-        UpdateText(Localization.GetInstance().GetLocaleText(localizationKey, args));
+        text.text = Localization.GetInstance().GetLocaleText(localizationKey, args);
+        text.SetAllDirty();
+
+        // TODO: 拆成function
+        Language currentLanguage = Localization.GetInstance().GetCurrentLanguage();
+        if (overriteFontAssetDictionary.ContainsKey(currentLanguage) == false)
+        {
+            if (defaultFontAsset)
+            {
+                text.font = defaultFontAsset;
+            }
+            return;
+        }
+
+        TMP_FontAsset overriteFontAsset = overriteFontAssetDictionary[currentLanguage];
+        text.font = overriteFontAsset;
     }
 
     /// <summary>
