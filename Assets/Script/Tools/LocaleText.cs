@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 [ExecuteInEditMode]
 [RequireComponent(typeof(Text))]
-public class LocaleText : LocaleTextBase<Text>
+public class LocaleText : LocaleTextComponentBase<Text>
 {
     protected override void UpdateText(string str)
     {

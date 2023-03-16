@@ -6,7 +6,7 @@ public enum Language
 {
     en_US,
     zh_TW,
-    zh_CN
+    zh_CN,
 }
 
 public class Localization
@@ -38,8 +38,14 @@ public class Localization
         return currentLanguage;
     }
 
-    // TODO: 新增按鈕來展示切換語系的功能 
-
+    /// <summary>
+    /// 使用字串設定目前使用語系並通知刷新
+    /// </summary>
+    /// <param name="str">要使用語系的名稱字串</param>
+    public void SetCurrentLanguage(string str)
+    {
+        currentLanguage = StringToLanguageEnum(str);
+    }
     /// <summary>
     /// 設定目前使用語系並通知刷新
     /// </summary>
@@ -56,7 +62,6 @@ public class Localization
         onLanguageChange();
     }
 
-
     // 所有語系的資料
     private readonly Dictionary<Language, Dictionary<string, string>> allLocaleTextData = new Dictionary<Language, Dictionary<string, string>>();
 
@@ -72,8 +77,6 @@ public class Localization
         {
             LoadCSVTextAsset(asset);
         }
-
-        onLanguageChange();
     }
 
     /// <summary>
@@ -154,13 +157,18 @@ public class Localization
     /// <param name="localizationKey">本地化鍵值</param>
     /// <param name="Args">要帶入字串的參數，會取代以 <i> 形式表示的字串，參數可以是數字也可以是鍵值</param>
     /// <returns>本地化Text</returns>
-    public string GetLocaleText(string localizationKey, string[] Args)
+    public string GetLocaleText(string localizationKey, string[] args = null)
     {
         string sString = TryGetTextFromCurrentLocaleData(localizationKey);
 
-        for (int i = 0; i < Args.Length; i++)
+        if (args == null)
         {
-            sString = sString.Replace($"<{i}>", TryGetTextFromCurrentLocaleData(Args[i]));
+            return sString;
+        }
+
+        for (int i = 0; i < args.Length; i++)
+        {
+            sString = sString.Replace($"<{i}>", TryGetTextFromCurrentLocaleData(args[i]));
         }
 
         return sString;
