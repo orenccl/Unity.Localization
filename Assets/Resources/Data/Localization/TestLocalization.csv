@@ -1,9 +1,7 @@
-﻿Key,en_US,zh_TW,zh_CN
+﻿Key,English,ChineseTraditional,ChineseSimplified
 TestKey1,Test text!,測試文字!,测试文字!
 TestKey2,Test text with parameters\nparameter 1 = <0>\nparameter 2 = <1>,測試文字帶參數\n參數1 = <0>\n參數2 = <1>,测试文字带参数\n参数1 = <0>\n参数2 = <1>
 TestTMP,Test TMP and parameter is <0>!,測試TMP文字是否會更換字體並正確顯示內容及參數 <0>,测试TMP文字是否会更换字体并正确显示内容及参数 <0>
 Button,Button,按鈕,按钮
 Language,Language,語言,语言
-en_US,English(America),English(America),English(America)
-zh_TW,繁體中文(台灣),繁體中文(台灣),繁體中文(台灣)
-zh_CN,简体中文(中国),简体中文(中国),简体中文(中国)
+

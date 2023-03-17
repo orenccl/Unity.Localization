@@ -5,7 +5,18 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Dropdown))]
 public class LocalizationDropdown : MonoBehaviour
 {
+    [Serializable]
+    protected struct SystemLanguageName
+    {
+        [SerializeField]
+        public string name;
+        [SerializeField]
+        public SystemLanguage language;
+    }
+
     private Dropdown dropdown;
+    [SerializeField]
+    private SystemLanguageName[] currentSupportLanguageName = new SystemLanguageName[0];
 
     // Start is called before the first frame update
     void Start()
@@ -21,11 +32,10 @@ public class LocalizationDropdown : MonoBehaviour
         dropdown.options.Clear();
 
         // 用Language enum的Name當作key值去查找本地顯示內容
-        foreach (string languageName in Enum.GetNames(typeof(Language)))
+        foreach (SystemLanguageName languageName in currentSupportLanguageName)
         {
             // 添加到選單上顯示
-            string str = Localization.GetInstance().GetLocaleText(languageName);
-            dropdown.options.Add(new Dropdown.OptionData(str));
+            dropdown.options.Add(new Dropdown.OptionData(languageName.name));
         }
 
         // 綁定onValueChanged事件回呼
@@ -41,7 +51,7 @@ public class LocalizationDropdown : MonoBehaviour
     private void DropdownValueChanged(Dropdown dropdown)
     {
         // 更新本地語系
-        Localization.GetInstance().SetCurrentLanguage((Language)dropdown.value);
+        Localization.GetInstance().SetCurrentLanguage(currentSupportLanguageName[dropdown.value].language);
     }
 
 }

@@ -1,28 +1,28 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 
 public class CSVReader
 {
     // 給外部查資料用
-    List<string> fields = new List<string>();
-    public int columns { get; private set; }
-    public int rows { get; private set; }
+    private List<string> fields = new List<string>();
+
+    public int Columns { get; private set; }
+    public int Rows { get; private set; }
     public string this[int column, int row]
     {
-        get { return fields[row*columns+column]; }
+        get { return fields[row * Columns + column]; }
     }
 
     // 內部分析資料用
     byte[] buffer;
     int offset = 0;
 
-    bool isDone { get { return (buffer==null || offset >= buffer.Length) ? true : false; } }
+    bool IsDone { get { return (buffer == null || offset >= buffer.Length) ? true : false; } }
     bool IsNewLineChar(char c) { return (c == '\n' || c == '\r') ? true : false; }
     bool IsComma(char c) { return (c == ',') ? true : false; }
     bool IsQuote(char c) { return (c == '"') ? true : false; }
-    bool IsLastIndex(string str, int i) { return i>=str.Length-1 ? true : false; }
+    bool IsLastIndex(string str, int i) { return i >= str.Length - 1 ? true : false; }
 
     /// <summary>
     ///  讀取一行
@@ -33,7 +33,7 @@ public class CSVReader
     {
         int max = buffer.Length;
         // skip empty lines
-        if( skipEmptyLine==true)
+        if (skipEmptyLine == true)
         {
             while (offset < max && buffer[offset] < 32) offset++;
         }
@@ -41,9 +41,9 @@ public class CSVReader
         // return one line
         int offsetTag = offset;
         string newLine = "";
-        while(isDone==false)
+        while (IsDone == false)
         {
-            if(IsNewLineChar((char)buffer[offset]) )
+            if (IsNewLineChar((char)buffer[offset]))
             {
                 newLine = Encoding.UTF8.GetString(buffer, offsetTag, offset - offsetTag);
                 offset++;
@@ -62,15 +62,15 @@ public class CSVReader
     public List<string> LoadCSV(TextAsset asset)
     {
         fields = new List<string>();
-        columns = 0;
-        rows = 0;
+        Columns = 0;
+        Rows = 0;
         buffer = asset.bytes;
         offset = 0;
         // 用來判定文字裡有沒有特殊符號：'"'
         bool insideQuotes = false;
         bool findField = false;
         List<char> field = new List<char>();
-        while (isDone == false)
+        while (IsDone == false)
         {
             string str = ReadLine(insideQuotes == true ? false : true);
             if (str == null) break;
@@ -95,7 +95,7 @@ public class CSVReader
                     {
                         // 遇到雙引號，表示一個欄位內的開始
                         insideQuotes = true;
-                        if (columns == 0)
+                        if (Columns == 0)
                         {
                             Debug.LogWarning("警告：表頭使用了特殊文字(,'\"')，載入結果將可能錯誤！");
                         }
@@ -140,26 +140,16 @@ public class CSVReader
                     field.Clear();
                     findField = false;
                     insideQuotes = false;
-                    if (IsLastIndex(str, i) == true && columns == 0) columns = fields.Count;
+                    if (IsLastIndex(str, i) == true && Columns == 0) Columns = fields.Count;
                 }
             }
             // 補尾巴跳掉的空欄位
-            if (columns != 0 && insideQuotes==false)
+            if (Columns != 0 && insideQuotes == false)
             {
-                while (fields.Count % columns != 0) fields.Add("");
+                while (fields.Count % Columns != 0) fields.Add("");
             }
         }
-        if( columns!=0 ) rows = fields.Count / columns;
+        if (Columns != 0) Rows = fields.Count / Columns;
         return fields;
-    }
-
-    /// <summary>
-    /// 讀取檔案，此檔必須放於Resources資料夾下
-    /// </summary>
-    /// <param name="fileName"></param>
-    public void LoadCSV(string fileName)
-    {
-        TextAsset asset = Resources.Load<TextAsset>(fileName);
-        LoadCSV(asset);
     }
 }

@@ -1,10 +1,18 @@
-﻿using System.Collections.Generic;
-using TMPro;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
-[ExecuteInEditMode]
 public abstract class LocaleTMPTextBase<T> : LocaleComponentBase where T : TMP_Text
 {
+    [Serializable]
+    protected struct LanguageFontOverride
+    {
+        [SerializeField]
+        public SystemLanguage language;
+        [SerializeField]
+        public TMP_FontAsset fontAsset;
+    }
 
     [SerializeField]
     [Tooltip("要代入字串中的參數，會取代掉以<i>表示的多國字串")]
@@ -12,9 +20,7 @@ public abstract class LocaleTMPTextBase<T> : LocaleComponentBase where T : TMP_T
     [SerializeField]
     protected TMP_FontAsset defaultFontAsset;
     [SerializeField]
-    protected SerializableDictionary<Language, TMP_FontAsset> overrideFontAsset;
-
-    private Dictionary<Language, TMP_FontAsset> overriteFontAssetDictionary;
+    protected List<LanguageFontOverride> FontOverrideList = new List<LanguageFontOverride>();
 
     protected T text;
 
@@ -27,7 +33,6 @@ public abstract class LocaleTMPTextBase<T> : LocaleComponentBase where T : TMP_T
             return;
         }
 
-        overriteFontAssetDictionary = overrideFontAsset.ToDictionary();
         Localize();
     }
 
@@ -36,27 +41,26 @@ public abstract class LocaleTMPTextBase<T> : LocaleComponentBase where T : TMP_T
     /// </summary>
     public override void Localize()
     {
-        if (text == null)
-        {
-            return;
-        }
-        // 依照繼承類別的不同，自行去更新文字
-        text.text = Localization.GetInstance().GetLocaleText(localizationKey, args);
-        text.SetAllDirty();
+        UpdateKeyAndArgs(localizationKey, args);
+        UpdateFontAsset();
+    }
 
-        // TODO: 拆成function
-        Language currentLanguage = Localization.GetInstance().GetCurrentLanguage();
-        if (overriteFontAssetDictionary.ContainsKey(currentLanguage) == false)
-        {
-            if (defaultFontAsset)
-            {
-                text.font = defaultFontAsset;
-            }
-            return;
-        }
+    /// <summary>
+    /// 重設鍵值, 並刷新顯示
+    /// </summary>
+    /// <param name="newLocalizationKey">新鍵值</param>
+    public void UpdateKey(string newLocalizationKey)
+    {
+        UpdateKeyAndArgs(newLocalizationKey, args);
+    }
 
-        TMP_FontAsset overriteFontAsset = overriteFontAssetDictionary[currentLanguage];
-        text.font = overriteFontAsset;
+    /// <summary>
+    /// 重設參數, 並刷新顯示
+    /// </summary>
+    /// <param name="newArgs">新參數</param>
+    public void UpdateArgs(string[] newArgs)
+    {
+        UpdateKeyAndArgs(localizationKey, newArgs);
     }
 
     /// <summary>
@@ -64,10 +68,27 @@ public abstract class LocaleTMPTextBase<T> : LocaleComponentBase where T : TMP_T
     /// </summary>
     /// <param name="newLocalizationKey">新鍵值</param>
     /// <param name="newArgs">新參數</param>
-    public void Relocalize(string newLocalizationKey, string[] newArgs)
+    public void UpdateKeyAndArgs(string newLocalizationKey, string[] newArgs)
     {
         localizationKey = newLocalizationKey;
         args = newArgs;
-        Localize();
+
+        if (text == null)
+        {
+            return;
+        }
+
+        text.text = Localization.GetInstance().GetLocaleText(localizationKey, args);
+        text.SetAllDirty();
+    }
+
+    /// <summary>
+    /// 依照語系更新字體
+    /// </summary>
+    private void UpdateFontAsset()
+    {
+        SystemLanguage currentLanguage = Localization.GetInstance().GetCurrentLanguage();
+        int index = FontOverrideList.FindIndex(value => value.language == currentLanguage);
+        text.font = index == -1 ? defaultFontAsset : FontOverrideList[index].fontAsset;
     }
 }

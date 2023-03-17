@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-[ExecuteInEditMode]
 [RequireComponent(typeof(Text))]
 public class LocaleText : LocaleComponentBase
 {
@@ -28,13 +27,25 @@ public class LocaleText : LocaleComponentBase
     /// </summary>
     public override void Localize()
     {
-        if (text == null)
-        {
-            return;
-        }
+        UpdateKeyAndArgs(localizationKey, args);
+    }
 
-        text.text = Localization.GetInstance().GetLocaleText(localizationKey, args);
-        text.SetAllDirty();
+    /// <summary>
+    /// 重設鍵值, 並刷新顯示
+    /// </summary>
+    /// <param name="newLocalizationKey">新鍵值</param>
+    public void UpdateKey(string newLocalizationKey)
+    {
+        UpdateKeyAndArgs(newLocalizationKey, args);
+    }
+
+    /// <summary>
+    /// 重設參數, 並刷新顯示
+    /// </summary>
+    /// <param name="newArgs">新參數</param>
+    public void UpdateArgs(string[] newArgs)
+    {
+        UpdateKeyAndArgs(localizationKey, newArgs);
     }
 
     /// <summary>
@@ -42,10 +53,17 @@ public class LocaleText : LocaleComponentBase
     /// </summary>
     /// <param name="newLocalizationKey">新鍵值</param>
     /// <param name="newArgs">新參數</param>
-    public void Relocalize(string newLocalizationKey, string[] newArgs)
+    public void UpdateKeyAndArgs(string newLocalizationKey, string[] newArgs)
     {
         localizationKey = newLocalizationKey;
         args = newArgs;
-        Localize();
+
+        if (text == null)
+        {
+            return;
+        }
+
+        text.text = Localization.GetInstance().GetLocaleText(localizationKey, args);
+        text.SetAllDirty();
     }
 }

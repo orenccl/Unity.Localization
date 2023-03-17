@@ -1,15 +1,9 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 
-public enum Language
-{
-    en_US,
-    zh_TW,
-    zh_CN,
-}
-
-public class Localization
+public class Localization : MonoBehaviour
 {
     private const string localeTextUrl = "Data/Localization/";
     private const string localeImageUrl = "Images/Localization/";
@@ -21,7 +15,9 @@ public class Localization
         if (instance == null)
         {
             // 初始化
-            instance = new Localization();
+            instance = new GameObject("Localization").AddComponent<Localization>();
+            DontDestroyOnLoad(instance.gameObject);
+
             instance.LoadAllLocaleTextData();
         }
 
@@ -29,28 +25,20 @@ public class Localization
     }
 
     // 目前使用的語系
-    Language currentLanguage = Language.en_US;
+    SystemLanguage currentLanguage = SystemLanguage.English;
     /// <summary>
     /// 讀取目前使用語系
     /// </summary>
-    public Language GetCurrentLanguage()
+    public SystemLanguage GetCurrentLanguage()
     {
         return currentLanguage;
     }
 
     /// <summary>
-    /// 使用字串設定目前使用語系並通知刷新
-    /// </summary>
-    /// <param name="str">要使用語系的名稱字串</param>
-    public void SetCurrentLanguage(string str)
-    {
-        currentLanguage = StringToLanguageEnum(str);
-    }
-    /// <summary>
     /// 設定目前使用語系並通知刷新
     /// </summary>
     /// <param name="language">要使用語系</param>
-    public void SetCurrentLanguage(Language language)
+    public void SetCurrentLanguage(SystemLanguage language)
     {
         if (allLocaleTextData.ContainsKey(language) == false)
         {
@@ -59,11 +47,11 @@ public class Localization
         }
 
         currentLanguage = language;
-        onLanguageChange();
+        StartCoroutine(OnLanguageChange());
     }
 
     // 所有語系的資料
-    private readonly Dictionary<Language, Dictionary<string, string>> allLocaleTextData = new Dictionary<Language, Dictionary<string, string>>();
+    private readonly Dictionary<SystemLanguage, Dictionary<string, string>> allLocaleTextData = new Dictionary<SystemLanguage, Dictionary<string, string>>();
 
     /// <summary>
     /// 載入語系表
@@ -102,18 +90,21 @@ public class Localization
         CSVReader csv = new CSVReader();
         csv.LoadCSV(asset);
 
-        for (int i = 1; i < csv.columns; i++)
+        // TODO: 防呆報錯
+        // col 0 存放key
+        for (int col = 1; col < csv.Columns; ++col)
         {
-            Language language = StringToLanguageEnum(csv[i, 0]);
+            SystemLanguage language = StringToLanguageEnum(csv[col, 0]);
 
             if (!allLocaleTextData.ContainsKey(language))
             {
                 allLocaleTextData[language] = new Dictionary<string, string>();
             }
 
-            for (int j = 1; j < csv.rows; j++)
+            // row 0 存放對應的多國語言
+            for (int row = 1; row < csv.Rows; ++row)
             {
-                allLocaleTextData[language][csv[0, j]] = csv[i, j];
+                allLocaleTextData[language][csv[0, row]] = csv[col, row];
             }
         }
     }
@@ -168,7 +159,7 @@ public class Localization
 
         for (int i = 0; i < args.Length; i++)
         {
-            sString = sString.Replace($"<{i}>", TryGetTextFromCurrentLocaleData(args[i]));
+            sString = sString.Replace($"<{i}>", args[i]);
         }
 
         return sString;
@@ -212,12 +203,16 @@ public class Localization
     /// <summary>
     /// 初次載入語言，或語言變更時呼叫
     /// </summary>
-    private void onLanguageChange()
+    private IEnumerator OnLanguageChange()
     {
-        // 通知所有本地化元件更新
-        foreach (LocaleComponentBase localeComponent in Object.FindObjectsOfType<LocaleComponentBase>(true))
+        // 找到所有的本地化元件
+        LocaleComponentBase[] localeComponents = Object.FindObjectsOfType<LocaleComponentBase>(true);
+
+        // 依序通知所有本地化元件更新
+        foreach (LocaleComponentBase localeComponent in localeComponents)
         {
             localeComponent.Localize();
+            yield return null; // 在每次迭代中暫停一幀
         }
     }
 
@@ -226,9 +221,9 @@ public class Localization
     /// </summary>
     /// <param name="str">要轉換的字串，需跟enum同名</param>
     /// <returns>Language enum或拋出系統錯誤</returns>
-    private Language StringToLanguageEnum(string str)
+    private SystemLanguage StringToLanguageEnum(string str)
     {
         // 當enum解析失敗會拋出系統錯誤，表示靜態表語言參數錯誤
-        return (Language)System.Enum.Parse(typeof(Language), str);
+        return (SystemLanguage)System.Enum.Parse(typeof(SystemLanguage), str);
     }
 }
