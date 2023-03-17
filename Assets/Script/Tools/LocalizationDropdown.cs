@@ -1,22 +1,12 @@
-﻿using System;
+﻿using LocalizationSystem;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(Dropdown))]
 public class LocalizationDropdown : MonoBehaviour
 {
-    [Serializable]
-    protected struct SystemLanguageName
-    {
-        [SerializeField]
-        public string name;
-        [SerializeField]
-        public SystemLanguage language;
-    }
-
     private Dropdown dropdown;
-    [SerializeField]
-    private SystemLanguageName[] currentSupportLanguageName = new SystemLanguageName[0];
 
     // Start is called before the first frame update
     void Start()
@@ -31,11 +21,21 @@ public class LocalizationDropdown : MonoBehaviour
         // 清空，確保不會有非預期的值
         dropdown.options.Clear();
 
+        // 取得支援語言清單及目前使用中語言
+        List<SupportLanguage> supportLanguageList = Localization.GetInstance().GetSupportLanguageList();
+        SystemLanguage currentLanguage = Localization.GetInstance().GetCurrentLanguage();
+
         // 用Language enum的Name當作key值去查找本地顯示內容
-        foreach (SystemLanguageName languageName in currentSupportLanguageName)
+        for (int i = 0; i < supportLanguageList.Count; ++i)
         {
             // 添加到選單上顯示
-            dropdown.options.Add(new Dropdown.OptionData(languageName.name));
+            dropdown.options.Add(new Dropdown.OptionData(supportLanguageList[i].name));
+            // 顯示值更新為目前使用中語言
+            if (supportLanguageList[i].language == currentLanguage)
+            {
+                dropdown.SetValueWithoutNotify(i);
+                dropdown.RefreshShownValue();
+            }
         }
 
         // 綁定onValueChanged事件回呼
@@ -50,8 +50,9 @@ public class LocalizationDropdown : MonoBehaviour
     // onValueChanged事件回呼
     private void DropdownValueChanged(Dropdown dropdown)
     {
-        // 更新本地語系
-        Localization.GetInstance().SetCurrentLanguage(currentSupportLanguageName[dropdown.value].language);
+        // 更新多國語言
+        SystemLanguage language = Localization.GetInstance().GetSupportLanguageList()[dropdown.value].language;
+        Localization.GetInstance().SetCurrentLanguage(language, this);
     }
 
 }
