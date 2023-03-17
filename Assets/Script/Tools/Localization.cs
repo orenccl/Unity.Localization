@@ -130,7 +130,7 @@ namespace LocalizationSystem
             // col 0 存放key
             for (int col = 1; col < csv.Columns; ++col)
             {
-                SystemLanguage language = StringToLanguageEnum(csv[col, 0]);
+                SystemLanguage language = StringToLanguageEnum(csv[0, col]);
 
                 if (!allLocaleTextData.ContainsKey(language))
                 {
@@ -140,7 +140,7 @@ namespace LocalizationSystem
                 // row 0 存放對應的多國語言
                 for (int row = 1; row < csv.Rows; ++row)
                 {
-                    allLocaleTextData[language][csv[0, row]] = csv[col, row];
+                    allLocaleTextData[language][csv[row, 0]] = csv[row, col];
                 }
             }
         }
