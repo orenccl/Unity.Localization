@@ -151,7 +151,7 @@ MonoBehaviour:
   localizationKey: Test2
   args:
   - 777
-  defaultFontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  defaultFontAsset: {fileID: 11400000, guid: 01de10760f650db4797e9a239d5c9213, type: 2}
   FontOverrideList:
   - language: 40
     fontAsset: {fileID: 11400000, guid: 42a1e3750444ebc488e229301968fd54, type: 2}

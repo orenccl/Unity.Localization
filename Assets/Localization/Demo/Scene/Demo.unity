@@ -354,7 +354,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: "\u5C1D\u8BD5\u8F93\u5165Key: Language \u6216 Win\n\u5E76\u6309\u4E0B\u66F4\u65B0\u6309\u94AE"
+  m_Text: "\u8A66\u8F38\u5165Key: Language \u6216 Win\n\u4E26\u6309\u4E0B\u66F4\u65B0\u6309\u9215"
 --- !u!222 &321104656
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1292,7 +1292,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: "\u4E0B\u9762\u662FTextMeshProUGUI\n\u53EF\u6307\u5B9A\u5B57\u4F53\uFF0C\u5E76\u5728\u5207\u6362\u8BED\u8A00\u65F6\u52A8\u6001\u5207\u6362\n\u907F\u514D\u7E41\u4F53\u6216\u7B80\u4F53\u65E0\u6CD5\u663E\u793A"
+  m_Text: "\u4E0B\u65B9\u662FTextMeshProUGUI\n\u53EF\u6307\u5B9A\u5B57\u9AD4\uFF0C\u4E26\u5728\u5207\u63DB\u8A9E\u8A00\u6642\u52D5\u614B\u5207\u63DB\n\u907F\u514D\u7E41\u9AD4\u6216\u7C21\u9AD4\u7121\u6CD5\u986F\u793A"
 --- !u!222 &1405254646
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1770,8 +1770,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: "\u5C1D\u8BD5\u8F93\u5165Key: Test1 \u6216 Test2 \u6216 Test3\nArgs: 111,
-    666\n\u5E76\u6309\u4E0B\u66F4\u65B0\u6309\u94AE"
+  m_Text: "\u8A66\u8F38\u5165Key: Test1 \u6216 Test2 \u6216 Test3\nArgs: 111, 666\n\u4E26\u6309\u4E0B\u66F4\u65B0\u6309\u9215"
 --- !u!222 &1899389286
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2465,12 +2464,12 @@ PrefabInstance:
     - target: {fileID: 7480999719410972931, guid: 2b4dcad5c5df2d54bb6e8c1bf96f05c4,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 380
+      value: 381
       objectReference: {fileID: 0}
     - target: {fileID: 7480999719410972931, guid: 2b4dcad5c5df2d54bb6e8c1bf96f05c4,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 130
+      value: 126
       objectReference: {fileID: 0}
     - target: {fileID: 7480999719410972931, guid: 2b4dcad5c5df2d54bb6e8c1bf96f05c4,
         type: 3}
