@@ -25,7 +25,7 @@ namespace LocalizationSystem
         }
 
         /// <summary>
-        /// 使用事先在Inspector設定好的鍵值與參數進行本地化
+        /// 使用事先在Inspector設定好的鍵與參數進行本地化
         /// </summary>
         public override void Localize()
         {
@@ -33,10 +33,10 @@ namespace LocalizationSystem
         }
 
         /// <summary>
-        /// 重設鍵值, 並刷新顯示
+        /// 重設鍵, 並刷新顯示
         /// </summary>
-        /// <param name="newLocalizationKey">新鍵值</param>
-        public void UpdateKey(string newLocalizationKey)
+        /// <param name="newLocalizationKey">新鍵</param>
+        public override void UpdateKey(string newLocalizationKey)
         {
             UpdateKeyAndArgs(newLocalizationKey, args);
         }
@@ -51,9 +51,9 @@ namespace LocalizationSystem
         }
 
         /// <summary>
-        /// 重設鍵值與參數, 並刷新顯示
+        /// 重設鍵與參數, 並刷新顯示
         /// </summary>
-        /// <param name="newLocalizationKey">新鍵值</param>
+        /// <param name="newLocalizationKey">新鍵</param>
         /// <param name="newArgs">新參數</param>
         public void UpdateKeyAndArgs(string newLocalizationKey, string[] newArgs)
         {

@@ -147,7 +147,7 @@ namespace LocalizationSystem
             if (csv[0, 0].Trim() != "KEY")
             {
                 Debug.LogError("表格第一列格式為 KEY, language1, language2, ... 以此類推\n" +
-                    "以KEY為首的行填入多國鍵值\n" +
+                    "以KEY為首的行填入多國鍵\n" +
                     "以language1、language2為首的行填入多國對應文字\n" +
                     "language的值請參考Unity SystemLanguage Enum\n" +
                     "e.g. Key,English,ChineseTraditional,ChineseSimplified\n");
@@ -209,8 +209,8 @@ namespace LocalizationSystem
         /// <summary>
         /// 獲取本地化Text
         /// </summary>
-        /// <param name="localizationKey">本地化鍵值</param>
-        /// <param name="Args">要帶入字串的參數，會取代以 <i> 形式表示的字串，參數可以是數字也可以是鍵值</param>
+        /// <param name="localizationKey">本地化鍵</param>
+        /// <param name="Args">要帶入字串的參數，會取代以 <i> 形式表示的字串</param>
         /// <returns>本地化Text</returns>
         public string GetLocaleText(string localizationKey, string[] args = null)
         {
@@ -232,7 +232,7 @@ namespace LocalizationSystem
         /// <summary>
         /// 嘗試從目前設定語系中獲取localizationKey對應的值，查找不到時回傳localizationKey
         /// </summary>
-        /// <param name="localizationKey">本地化鍵值</param>
+        /// <param name="localizationKey">本地化鍵</param>
         /// <returns>localizationKey對應的值，查找不到時回傳localizationKey</returns>
         private string TryGetTextFromCurrentLocaleData(string localizationKey)
         {
@@ -250,7 +250,7 @@ namespace LocalizationSystem
         /// <summary>
         /// 獲取本地化Sprite
         /// </summary>
-        /// <param name="localizationKey">本地化鍵值</param>
+        /// <param name="localizationKey">本地化鍵</param>
         /// <returns>Sprite</returns>
         public Sprite GetLocaleSprite(string localizationKey)
         {
