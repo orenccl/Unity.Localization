@@ -1,6 +1,8 @@
 # Unity.Localization
 Localization system
 
+![image](https://github.com/orenccl/Unity.Localization/blob/main/Preview/Preview.gif)
+
 ## 功能
 * Demo場景(展示UI操作多國功能、展示程式碼操作多國功能)
 * CSVReader可讀取CSV檔案格式
