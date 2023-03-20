@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34d25fe43c2d15c46b2f1f26b701a3c6, type: 3}
   m_Name: LanguageSetting
   m_EditorClassIdentifier: 
+  localeTextUrl: Localization/Demo/Text/
+  localeImageUrl: Localization/Demo/Image/
   supportLanguageList:
   - name: English
     language: 10

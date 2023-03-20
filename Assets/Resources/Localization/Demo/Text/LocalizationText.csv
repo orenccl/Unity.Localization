@@ -1,0 +1,7 @@
+﻿KEY,English,ChineseTraditional,ChineseSimplified
+Test1,Test text!,測試文字!,测试文字!
+Test2,Test text with parameters\nparameter 1 = <0>,測試文字帶參數\n參數1 = <0>,测试文字带参数\n参数1 = <0>
+Test3,Test text with parameters\nparameter 1 = <0>\nparameter 2 = <1>,測試文字帶參數\n參數1 = <0>\n參數2 = <1>,测试文字带参数\n参数1 = <0>\n参数2 = <1>
+HintUpdateTextExample,"Try to enter Key: Test1 or Test2 or Test3\nArgs: 111, 666\n and press the update button","試輸入Key: Test1 或 Test2 或 Test3\nArgs: 111, 666\n並按下更新按鈕","尝试输入Key: Test1 或 Test2 或 Test3\nArgs: 111, 666\n并按下更新按钮"
+HintUpdateImageExample,Try to enter Key: Language or Win\n and press the update button,試輸入Key: Language 或 Win\n並按下更新按鈕,尝试输入Key: Language 或 Win\n并按下更新按钮
+HintTextMeshProUGUI,Below is TextMeshProUGUI\nlanguage fonts can be specified\nAvoid chinese characters not displayed,下方是TextMeshProUGUI\n可指定字體，並在切換語言時動態切換\n避免繁體或簡體無法顯示,下面是TextMeshProUGUI\n可指定字体，并在切换语言时动态切换\n避免繁体或简体无法显示
