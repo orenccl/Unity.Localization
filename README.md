@@ -5,7 +5,6 @@ Localization system
 
 ## 功能
 * Demo場景(展示UI操作多國功能、展示程式碼操作多國功能)
-* CSVReader可讀取CSV檔案格式
 * LanguageSetting可自由調整多國檔案路徑及支持語言清單
 * 實作Text、TextMeshPro、TextMeshProUGUI、Sprite元件
 * TextMeshPro、TextMeshProUGUI可隨多國切換字體
@@ -38,9 +37,6 @@ Localization system
         - Scene
             - Demo.unity (完整示範場景)
             
-- FileReader (讀檔插件資料夾)
-    - CSVReader.cs (讀取CSV表格內容供多國系統使用)
-
 - Resources (資源存放資料夾)
     - Localization
         - LanguageSetting.asset (必須要有，設定支持語言清單與存放路徑)
@@ -98,19 +94,6 @@ Localization system
 ## 使用方式
 1. 需在Resources/Localization右鍵選單ScriptableObject建立LanguageSetting，並設定要支持的語言與素材存放路徑
 
+2. 使用Json建立多國語言表，並放在相對應語言的路徑，可查看Demo範例。
 
-2. 使用Excel建立並匯出CSV多國語言表，並放在相對應的路徑，表格範例如下:
-第一列第一行固定標示KEY
-第一列填入所有支援語系，第一行填入所有鍵
-接著把相對應的值填入表格內
-
-| KEY | English | ChineseTraditional | ChineseSimplified |
-| -------- | -------- | -------- | -------- |
-| Test | Test text with parameters\nparameter 1 = <0>\nparameter 2 = <1> | 測試文字帶參數\n參數1 = <0>\n參數2 = <1> | 测试文字带参数\n参数1 = <0>\n参数2 = <1> |
-| Hint | Try to enter Key: Test1 or Test2 or Test3\nArgs: 111, 666\n and press the update button | 試輸入Key: Test1 或 Test2 或 Test3\nArgs: 111, 666\n並按下更新按鈕 | 尝试输入Key: Test1 或 Test2 或 Test3\nArgs: 111, 666\n并按下更新按钮 |
-
-3. 將多國圖片放在相對應的路徑，取名方式為`{Key}_{SystemLanguage}`範例如下:
-Key = Language，支援English、ChineseTraditional、ChineseSimplified三種語系
-* Language_English.png
-* Language_ChineseTraditional.png
-* Language_ChineseSimplified.png
+3. 將多國圖片放在相對應語言的路徑，可查看Demo範例。
