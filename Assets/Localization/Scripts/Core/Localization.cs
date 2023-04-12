@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using FileReader;
+using Newtonsoft.Json;
 
 namespace LocalizationSystem
 {
@@ -21,9 +21,9 @@ namespace LocalizationSystem
         private List<SupportLanguage> supportLanguageList = new List<SupportLanguage>();
 
         // 目前使用的語系
-        SystemLanguage currentLanguage = SystemLanguage.English;
-        // 全部語系的資料
-        private readonly Dictionary<SystemLanguage, Dictionary<string, string>> allLocaleTextData = new Dictionary<SystemLanguage, Dictionary<string, string>>();
+        private SystemLanguage currentLanguage = SystemLanguage.English;
+        // 多國文字資料
+        private readonly Dictionary<string, string> localeTextData = new Dictionary<string, string>();
 
         /// <summary>
         /// 取得Singleton，並在初次使用時初始化
@@ -65,29 +65,16 @@ namespace LocalizationSystem
         /// <param name="setter">切換語系的物件，需繼承Monobehavior，用於Coroutine執行多國元件更新顯示</param>
         public void SetCurrentLanguage(SystemLanguage language, MonoBehaviour setter)
         {
-            if (allLocaleTextData.ContainsKey(language) == false)
+            if (supportLanguageList.FindIndex(supportLanguage => supportLanguage.language == language) == -1)
             {
-                Debug.LogError($"Language: {language} 沒有任何靜態資料，請檢查是否有設定!");
+                Debug.LogError($"多國並不支援Language: {language}，請檢查 {settingUrl} 是否有設定!");
                 return;
             }
 
             currentLanguage = language;
+            // 重新載入多國資料
+            LoadLocaleTextData();
             setter.StartCoroutine(OnLanguageChange());
-        }
-
-        /// <summary>
-        /// 取得目前語系的資料
-        /// </summary>
-        /// <returns>目前語系的資料</returns>
-        private Dictionary<string, string> GetCurrentLocaleTextData()
-        {
-            if (allLocaleTextData.ContainsKey(currentLanguage) == false)
-            {
-                Debug.LogError($"目前沒有載入任何 {currentLanguage} 的本地語言資料");
-                return null;
-            }
-
-            return allLocaleTextData[currentLanguage];
         }
 
         /// <summary>
@@ -115,61 +102,32 @@ namespace LocalizationSystem
             currentLanguage = index == -1 ? supportLanguageList[0].language : supportLanguageList[index].language;
 
             // 載入多國語言文字資料
-            LoadAllLocaleTextData();
+            LoadLocaleTextData();
         }
 
         /// <summary>
         /// 載入全部語系表
         /// </summary>
         /// <param name="fileName"></param>
-        private void LoadAllLocaleTextData()
+        private void LoadLocaleTextData()
         {
             // 重置資料
-            allLocaleTextData.Clear();
-            // 載入全部CSV語系表
-            foreach (TextAsset asset in Resources.LoadAll<TextAsset>(localeTextUrl))
+            localeTextData.Clear();
+
+            // 載入對應語系表
+            foreach (TextAsset asset in Resources.LoadAll<TextAsset>($"{localeTextUrl}{currentLanguage}"))
             {
-                LoadCSVTextAsset(asset);
+                LoadJsonAsset(asset);
             }
         }
 
-        /// <summary>
-        /// 載入CSV語系表
-        /// </summary>
-        /// <param name="TextAsset">CSV asset</param>
-        private void LoadCSVTextAsset(TextAsset asset)
+        private void LoadJsonAsset(TextAsset asset)
         {
-            // 創建Reader並載入
-            CSVReader csv = new CSVReader();
-            csv.LoadCSV(asset);
+            Dictionary<string, string> jsonData = JsonConvert.DeserializeObject<Dictionary<string, string>>(asset.text);
 
-            // 防呆提醒
-            if (csv[0, 0].Trim() != "KEY")
+            foreach (KeyValuePair<string, string> pair in jsonData)
             {
-                Debug.LogError("表格第一列格式為 KEY, language1, language2, ... 以此類推\n" +
-                    "以KEY為首的行填入多國鍵\n" +
-                    "以language1、language2為首的行填入多國對應文字\n" +
-                    "language的值請參考Unity SystemLanguage Enum\n" +
-                    "e.g. Key,English,ChineseTraditional,ChineseSimplified\n");
-            }
-
-            // 遍歷行，讀取多國對應文字
-            for (int col = 1; col < csv.Columns; ++col)
-            {
-                // 紀錄該行多國語言，col 0 為多國語言
-                SystemLanguage language = StringToLanguageEnum(csv[0, col]);
-                // 創建該行多國語言表
-                if (!allLocaleTextData.ContainsKey(language))
-                {
-                    allLocaleTextData[language] = new Dictionary<string, string>();
-                }
-
-                // 遍歷列，將所有鍵值存入該行多國語言表
-                for (int row = 1; row < csv.Rows; ++row)
-                {
-                    // row 0 為 localizationKey
-                    allLocaleTextData[language][csv[row, 0]] = csv[row, col];
-                }
+                localeTextData.Add(pair.Key, pair.Value);
             }
         }
 
@@ -180,13 +138,7 @@ namespace LocalizationSystem
         /// <returns>是否含有此key</returns>
         public bool IsContainKey(string localizationKey)
         {
-            Dictionary<string, string> currentLocaleData = GetCurrentLocaleTextData();
-            if (currentLocaleData == null)
-            {
-                return false;
-            }
-
-            return currentLocaleData.ContainsKey(localizationKey);
+            return localeTextData.ContainsKey(localizationKey);
         }
 
         /// <summary>
@@ -196,13 +148,7 @@ namespace LocalizationSystem
         /// <returns>有多少數量</returns>
         public int GetPrefixKeyCount(string prefix)
         {
-            Dictionary<string, string> currentLocaleData = GetCurrentLocaleTextData();
-            if (currentLocaleData == null)
-            {
-                return 0;
-            }
-
-            string[] resultkeys = currentLocaleData.Keys.Where(k => k.StartsWith(prefix)).ToArray();
+            string[] resultkeys = localeTextData.Keys.Where(k => k.StartsWith(prefix)).ToArray();
             return resultkeys.Length;
         }
 
@@ -236,15 +182,14 @@ namespace LocalizationSystem
         /// <returns>localizationKey對應的值，查找不到時回傳localizationKey</returns>
         private string TryGetTextFromCurrentLocaleData(string localizationKey)
         {
-            Dictionary<string, string> currentLocaleData = GetCurrentLocaleTextData();
             // 查找不到的話直接回傳Key
-            if (currentLocaleData == null || currentLocaleData.ContainsKey(localizationKey) == false)
+            if (localeTextData.ContainsKey(localizationKey) == false)
             {
                 Debug.LogError($"找不到localizationKey所對應的值, 請檢查多國語言表中是否有設定該值");
                 return localizationKey;
             }
             // 回傳對應的值
-            return currentLocaleData[localizationKey];
+            return localeTextData[localizationKey];
         }
 
         /// <summary>
@@ -254,8 +199,7 @@ namespace LocalizationSystem
         /// <returns>Sprite</returns>
         public Sprite GetLocaleSprite(string localizationKey)
         {
-            // Sprite 命名格式如下 {localizationKey}_en_US、{localizationKey}_zh_TW
-            string spriteUrl = $"{localeImageUrl}{localizationKey}_{currentLanguage}";
+            string spriteUrl = $"{localeImageUrl}{currentLanguage}/{localizationKey}";
             // Unity會自動判斷是否載入過，若載入過不會重複載入
             Sprite sprite = Resources.Load<Sprite>(spriteUrl);
             if (sprite == null)
@@ -279,17 +223,6 @@ namespace LocalizationSystem
                 localeComponent.Localize();
                 yield return null; // 在每次迭代中暫停一幀
             }
-        }
-
-        /// <summary>
-        /// 將字串轉換為Language enum格式
-        /// </summary>
-        /// <param name="str">要轉換的字串，需跟enum同名</param>
-        /// <returns>Language enum或拋出系統錯誤</returns>
-        private SystemLanguage StringToLanguageEnum(string str)
-        {
-            // 當enum解析失敗會拋出系統錯誤，表示靜態表語言參數錯誤
-            return (SystemLanguage)System.Enum.Parse(typeof(SystemLanguage), str);
         }
     }
 }

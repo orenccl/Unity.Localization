@@ -1,0 +1,8 @@
+{
+  "Test1": "Test text!",
+  "Test2": "Test text with parameters\nparameter 1 = <0>",
+  "Test3": "Test text with parameters\nparameter 1 = <0>\nparameter 2 = <1>",
+  "HintUpdateTextExample": "Try to enter Key: Test1 or Test2 or Test3\nArgs: 111, 666\n and press the update button",
+  "HintUpdateImageExample": "Try to enter Key: Language or Win\n and press the update button",
+  "HintTextMeshProUGUI": "Below is TextMeshProUGUI\nlanguage fonts can be specified\nAvoid chinese characters not displayed"
+}

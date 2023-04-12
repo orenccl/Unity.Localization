@@ -1,0 +1,8 @@
+{
+  "Test1": "測試文字!",
+  "Test2": "測試文字帶參數\n參數1 = <0>",
+  "Test3": "測試文字帶參數\n參數1 = <0>\n參數2 = <1>",
+  "HintUpdateTextExample": "試輸入Key: Test1 或 Test2 或 Test3\nArgs: 111, 666\n並按下更新按鈕",
+  "HintUpdateImageExample": "試輸入Key: Language 或 Win\n並按下更新按鈕",
+  "HintTextMeshProUGUI": "下方是TextMeshProUGUI\n可指定字體，並在切換語言時動態切換\n避免繁體或簡體無法顯示"
+}
